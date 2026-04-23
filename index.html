@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AZ Media Tech | Digital Agency</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons (Professional Vector Icons, NO Emojis) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        /* --- Premium Design System --- */
+        :root {
+            /* Dark Mode (Premium Agency Look) */
+            --bg-color: #050505;
+            --surface-color: rgba(255, 255, 255, 0.03);
+            --surface-hover: rgba(255, 255, 255, 0.06);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --accent-color: #ccff00; /* High energy agency accent */
+            --btn-text: #050505;
+            --nav-bg: rgba(5, 5, 5, 0.6);
+            
+            /* Typography */
+            --font-display: 'Syne', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            
+            /* Layout */
+            --section-padding: 140px 5%;
+            --border-radius: 20px;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f7f7f9;
+            --surface-color: rgba(0, 0, 0, 0.03);
+            --surface-hover: rgba(0, 0, 0, 0.06);
+            --border-color: rgba(0, 0, 0, 0.08);
+            --text-main: #111111;
+            --text-muted: #555555;
+            --accent-color: #a3cc00;
+            --btn-text: #ffffff;
+            --nav-bg: rgba(247, 247, 249, 0.7);
+        }
+
+        /* --- Reset & Base --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html {
+            scroll-behavior: auto; /* Handled by GSAP ScrollTo if needed, but smooth scrolling on native causes GSAP conflicts sometimes. We'll leave it auto for better GSAP ScrollTrigger performance */
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4, .logo {
+            font-family: var(--font-display);
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* --- Typography Utilities --- */
+        .section-title {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            margin-bottom: 4rem;
+            letter-spacing: -0.03em;
+            position: relative;
+        }
+
+        /* --- Magnetic Buttons --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px 36px;
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.3s, color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--text-main);
+            color: var(--bg-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-color);
+            color: #000;
+        }
+
+        /* --- Navbar (Glassmorphism) --- */
+        nav {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 90px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 5%;
+            background: var(--nav-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            transition: transform 0.4s ease, background 0.4s ease, border-color 0.4s ease;
+        }
+
+        .nav-hidden {
+            transform: translateY(-100%);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+        }
+
+        .logo span { color: var(--accent-color); }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+        }
+
+        .nav-links {
+            display: flex; gap: 2rem;
+        }
+
+        .nav-links a {
+            font-weight: 500; font-size: 0.95rem;
+            opacity: 0.7; transition: opacity 0.3s ease, color 0.3s ease;
+        }
+
+        .nav-links a:hover { opacity: 1; color: var(--accent-color); }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding-left: 2rem;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .icon-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .lang-btn {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex; flex-direction: column; justify-content: center;
+            padding: var(--section-padding);
+            padding-top: 150px;
+        }
+
+        /* Premium CSS Mesh Gradient Background */
+        .hero-mesh {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            background: radial-gradient(circle at 15% 50%, rgba(204, 255, 0, 0.08), transparent 25%),
+                        radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.03), transparent 25%);
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: clamp(3.5rem, 8vw, 7rem);
+            letter-spacing: -0.04em;
+            margin-bottom: 2rem;
+            line-height: 1;
+            /* GSAP Clip-path setup */
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            color: var(--text-muted);
+            max-width: 600px;
+            margin-bottom: 3rem;
+            font-weight: 400;
+        }
+
+        /* --- Services Section --- */
+        .services { padding: var(--section-padding); }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            padding: 3.5rem 3rem;
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(10px);
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.4s ease;
+        }
+
+        .service-card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-10px);
+        }
+
+        .service-icon {
+            font-size: 3.5rem;
+            color: var(--text-main);
+            margin-bottom: 2rem;
+            display: inline-block;
+            transition: color 0.3s ease;
+        }
+
+        .service-card:hover .service-icon {
+            color: var(--accent-color);
+        }
+
+        .service-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-card p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* --- About Section --- */
+        .about { padding: var(--section-padding); }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+
+        .about-text p {
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .about-text p strong {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .stats-container {
+            display: flex; flex-direction: column; gap: 3rem;
+        }
+
+        .stat-item {
+            padding-left: 2rem;
+            border-left: 2px solid var(--border-color);
+            transition: border-color 0.4s ease;
+        }
+
+        .stat-item:hover {
+            border-color: var(--accent-color);
+        }
+
+        .stat-number {
+            font-family: var(--font-display);
+            font-size: clamp(3.5rem, 6vw, 5rem);
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .stat-number span.plus { color: var(--accent-color); }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 500;
+        }
+
+        /* --- Work Section --- */
+        .work { padding: var(--section-padding); }
+
+        .work-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+        }
+
+        .project-card {
+            display: flex; flex-direction: column;
+            group: project;
+        }
+
+        .project-image-wrapper {
+            width: 100%;
+            height: 400px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Abstract Gradient Placeholders replacing standard images */
+        .project-image {
+            width: 100%; height: 120%; /* Extra height for parallax */
+            background-size: cover;
+            background-position: center;
+            transform-origin: center;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        
+        .img-1 { background: linear-gradient(135deg, #1f1c2c 0%, #928DAB 100%); }
+        .img-2 { background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); }
+        .img-3 { background: linear-gradient(135deg, #232526 0%, #414345 100%); }
+        
+        [data-theme="light"] .img-1 { background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); }
+        [data-theme="light"] .img-2 { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
+        [data-theme="light"] .img-3 { background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); }
+
+        .project-card:hover .project-image {
+            transform: scale(1.05);
+        }
+
+        .project-tags {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            display: flex; gap: 1rem;
+        }
+
+        .project-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-btn {
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--text-main);
+            padding-bottom: 4px;
+            align-self: flex-start;
+            transition: color 0.3s ease, border-color 0.3s ease, gap 0.3s ease;
+        }
+
+        .project-card:hover .project-btn {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+            gap: 1rem;
+        }
+
+        /* --- Contact Section --- */
+        .contact {
+            padding: var(--section-padding);
+            text-align: center;
+            background: var(--surface-color);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .contact-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .contact p {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            margin-bottom: 4rem;
+        }
+
+        .contact-links {
+            display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;
+        }
+
+        .contact-pill {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 16px 36px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .contact-pill:hover {
+            background: var(--text-main);
+            color: var(--bg-color);
+            border-color: var(--text-main);
+            transform: translateY(-5px);
+        }
+        
+        .contact-pill i { font-size: 1.4rem; }
+
+        /* --- Footer --- */
+        footer {
+            padding: 3rem 5%;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        footer span { color: var(--text-main); font-weight: 600; }
+
+        /* --- Responsive --- */
+        @media (max-width: 1024px) {
+            .about-grid { grid-template-columns: 1fr; gap: 4rem; }
+            .hero h1 { font-size: 4rem; }
+        }
+
+        @media (max-width: 768px) {
+            :root { --section-padding: 100px 5%; }
+            .nav-links { display: none; /* Can be expanded to hamburger menu */ }
+            .hero h1 { font-size: 3rem; }
+            .stats-container { gap: 2rem; }
+            .contact-links { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Professional Navbar -->
+    <nav id="navbar">
+        <a href="#home" class="logo">AZ<span>Media</span></a>
+        
+        <div class="nav-right">
+            <ul class="nav-links">
+                <li><a href="#services" data-i18n="nav_services">Services</a></li>
+                <li><a href="#about" data-i18n="nav_about">About</a></li>
+                <li><a href="#work" data-i18n="nav_work">Work</a></li>
+                <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
+            </ul>
+            
+            <div class="nav-controls">
+                <!-- Theme Toggle (Phosphor Icon) -->
+                <button class="icon-btn" id="theme-toggle" aria-label="Toggle Theme">
+                    <i class="ph ph-sun"></i>
+                </button>
+                <!-- Language Toggle -->
+                <button class="icon-btn lang-btn" id="lang-toggle" aria-label="Toggle Language">
+                    EN
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero">
+        <div class="hero-mesh"></div>
+        <div class="hero-content">
+            <h1 class="gsap-hero-title" data-i18n="hero_title">We Build Digital Products That Matter.</h1>
+            <p class="gsap-hero-text" data-i18n="hero_subtitle">AZ Media Tech is a full-service digital agency crafting exceptional web apps, mobile experiences, and AI solutions with uncompromising design.</p>
+            <div class="gsap-hero-btn">
+                <a href="#work" class="btn btn-primary magnetic" data-i18n="hero_cta">See Our Work</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <h2 class="section-title gsap-fade-up" data-i18n="services_title">What We Do</h2>
+        <div class="services-grid">
+            
+            <div class="service-card gsap-stagger-card">
+                <i class="ph ph-globe-hemisphere-west service-icon"></i>
+                <h3 data-i18n="service1_title">Web Development</h3>
+                <p data-i18n="service1_desc">We engineer scalable, high-performance web applications tailored to your business goals. From complex platforms to immersive landing pages.</p>
+            </div>
+            
+            <div class="service-card gsap-stagger-card">
+                <i class="ph ph-device-mobile service-icon"></i>
+                <h3 data-i18n="service2_title">Mobile Apps</h3>
+                <p data-i18n="service2_desc">Native and cross-platform mobile experiences that users love. We turn complex requirements into intuitive, powerful mobile applications.</p>
+            </div>
+            
+            <div class="service-card gsap-stagger-card">
+                <i class="ph ph-robot service-icon"></i>
+                <h3 data-i18n="service3_title">AI & Automation</h3>
+                <p data-i18n="service3_desc">Leverage the power of artificial intelligence to automate workflows and unlock new capabilities. We integrate cutting-edge AI models.</p>
+            </div>
+            
+            <div class="service-card gsap-stagger-card">
+                <i class="ph ph-bezier-curve service-icon"></i>
+                <h3 data-i18n="service4_title">UI/UX Design</h3>
+                <p data-i18n="service4_desc">Aesthetics backed by strategy. We design user-centric interfaces that not only look stunning but drive engagement through flawless journeys.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="about-grid">
+            <div class="about-text gsap-fade-up">
+                <h2 class="section-title" data-i18n="about_title" style="margin-bottom: 2rem;">Who We Are</h2>
+                <p data-i18n="about_p1">At <strong>AZ Media Tech</strong>, we don't just write code — we architect digital futures. We are a collective of relentless innovators, designers, and engineers obsessed with pushing the boundaries.</p>
+                <p data-i18n="about_p2">We partner with visionary startups and established enterprises to craft bespoke solutions. We believe in bold ideas, rapid iteration, and delivering products that leave a lasting impact.</p>
+            </div>
+            
+            <div class="stats-container" id="stats-container">
+                <div class="stat-item gsap-fade-up">
+                    <div class="stat-number"><span class="counter" data-target="50">0</span><span class="plus">+</span></div>
+                    <div class="stat-label" data-i18n="stat1_label">Projects Delivered</div>
+                </div>
+                <div class="stat-item gsap-fade-up">
+                    <div class="stat-number"><span class="counter" data-target="12">0</span></div>
+                    <div class="stat-label" data-i18n="stat2_label">Countries Reached</div>
+                </div>
+                <div class="stat-item gsap-fade-up">
+                    <div class="stat-number"><span class="counter" data-target="100">0</span><span class="plus">%</span></div>
+                    <div class="stat-label" data-i18n="stat3_label">Client Satisfaction</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Work Section -->
+    <section id="work" class="work">
+        <h2 class="section-title gsap-fade-up" data-i18n="work_title">Selected Works</h2>
+        <div class="work-grid">
+            
+            <div class="project-card gsap-fade-up">
+                <div class="project-image-wrapper">
+                    <div class="project-image img-1 gsap-parallax"></div>
+                </div>
+                <div class="project-tags">
+                    <span data-i18n="tag_web">Web App</span> &bull; <span>FinTech</span>
+                </div>
+                <h3 class="project-title">Nexus Banking</h3>
+                <a href="#" class="project-btn magnetic"><span data-i18n="work_btn">View Case Study</span> <i class="ph ph-arrow-right"></i></a>
+            </div>
+
+            <div class="project-card gsap-fade-up">
+                <div class="project-image-wrapper">
+                    <div class="project-image img-2 gsap-parallax"></div>
+                </div>
+                <div class="project-tags">
+                    <span data-i18n="tag_ai">AI</span> &bull; <span>Mobile</span>
+                </div>
+                <h3 class="project-title">Aura Health</h3>
+                <a href="#" class="project-btn magnetic"><span data-i18n="work_btn">View Case Study</span> <i class="ph ph-arrow-right"></i></a>
+            </div>
+
+            <div class="project-card gsap-fade-up">
+                <div class="project-image-wrapper">
+                    <div class="project-image img-3 gsap-parallax"></div>
+                </div>
+                <div class="project-tags">
+                    <span data-i18n="tag_ux">UI/UX</span> &bull; <span>SaaS</span>
+                </div>
+                <h3 class="project-title">Velocity Data</h3>
+                <a href="#" class="project-btn magnetic"><span data-i18n="work_btn">View Case Study</span> <i class="ph ph-arrow-right"></i></a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="contact-content">
+            <h2 class="section-title gsap-fade-up" data-i18n="contact_title" style="margin-bottom: 1.5rem;">Let's Build Something</h2>
+            <p class="gsap-fade-up" data-i18n="contact_desc">Ready to transform your vision into reality? We are currently accepting new projects for 2026. Drop us a line.</p>
+            
+            <div class="contact-links gsap-fade-up">
+                <a href="#" class="contact-pill magnetic"><i class="ph ph-envelope-simple"></i> hello@azmediatech.com</a>
+                <a href="#" class="contact-pill magnetic"><i class="ph ph-x-logo"></i> Twitter / X</a>
+                <a href="#" class="contact-pill magnetic"><i class="ph ph-github-logo"></i> GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <span data-i18n="footer_text">&copy; 2026 AZ Media Tech. All rights reserved. Designed with intention.</span>
+    </footer>
+
+    <!-- GSAP CDN for Professional Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Application Logic -->
+    <script>
+        // --- 1. i18n Localization (English & Azerbaijani) ---
+        const dict = {
+            en: {
+                nav_services: "Services",
+                nav_about: "About",
+                nav_work: "Work",
+                nav_contact: "Contact",
+                hero_title: "We Build Digital Products That Matter.",
+                hero_subtitle: "AZ Media Tech is a full-service digital agency crafting exceptional web apps, mobile experiences, and AI solutions with uncompromising design.",
+                hero_cta: "See Our Work",
+                services_title: "What We Do",
+                service1_title: "Web Development",
+                service1_desc: "We engineer scalable, high-performance web applications tailored to your business goals. From complex platforms to immersive landing pages.",
+                service2_title: "Mobile Apps",
+                service2_desc: "Native and cross-platform mobile experiences that users love. We turn complex requirements into intuitive, powerful mobile applications.",
+                service3_title: "AI & Automation",
+                service3_desc: "Leverage the power of artificial intelligence to automate workflows and unlock new capabilities. We integrate cutting-edge AI models.",
+                service4_title: "UI/UX Design",
+                service4_desc: "Aesthetics backed by strategy. We design user-centric interfaces that not only look stunning but drive engagement through flawless journeys.",
+                about_title: "Who We Are",
+                about_p1: "At <strong>AZ Media Tech</strong>, we don't just write code — we architect digital futures. We are a collective of relentless innovators, designers, and engineers obsessed with pushing the boundaries.",
+                about_p2: "We partner with visionary startups and established enterprises to craft bespoke solutions. We believe in bold ideas, rapid iteration, and delivering products that leave a lasting impact.",
+                stat1_label: "Projects Delivered",
+                stat2_label: "Countries Reached",
+                stat3_label: "Client Satisfaction",
+                work_title: "Selected Works",
+                tag_web: "Web App",
+                tag_ai: "AI",
+                tag_ux: "UI/UX",
+                work_btn: "View Case Study",
+                contact_title: "Let's Build Something",
+                contact_desc: "Ready to transform your vision into reality? We are currently accepting new projects for 2026. Drop us a line.",
+                footer_text: "&copy; 2026 AZ Media Tech. All rights reserved. Designed with intention."
+            },
+            az: {
+                nav_services: "Xidmətlər",
+                nav_about: "Haqqımızda",
+                nav_work: "İşlər",
+                nav_contact: "Əlaqə",
+                hero_title: "Rəqəmsal Gələcəyi İnşa Edirik.",
+                hero_subtitle: "AZ Media Tech mükəmməl dizaynla veb tətbiqlər, mobil təcrübələr və süni intellekt həlləri yaradan tam xidmətli rəqəmsal agentlikdir.",
+                hero_cta: "İşlərimizə Baxın",
+                services_title: "Nə Edirik",
+                service1_title: "Veb İnkişafı",
+                service1_desc: "Biznes məqsədlərinizə uyğun, miqyaslana bilən və yüksək performanslı veb tətbiqlər mühəndisliyi. Mürəkkəb platformalardan təsirli səhifələrə qədər.",
+                service2_title: "Mobil Tətbiqlər",
+                service2_desc: "İstifadəçilərin sevdiyi yerli və çarpaz platformalı mobil təcrübələr yaradırıq. Mürəkkəb tələbləri intuitiv tətbiqlərə çeviririk.",
+                service3_title: "Süni İntellekt (AI)",
+                service3_desc: "İş axınlarını avtomatlaşdırmaq və yeni imkanlar açmaq üçün süni intellektin gücündən istifadə edin. Ən son AI modellərini tətbiq edirik.",
+                service4_title: "UI/UX Dizayn",
+                service4_desc: "Strategiya ilə dəstəklənən estetika. İştirakı artıran və istifadəçi mərkəzli olan mükəmməl interfeyslər dizayn edirik.",
+                about_title: "Biz Kimik",
+                about_p1: "<strong>AZ Media Tech</strong>-də biz sadəcə kod yazmırıq — rəqəmsal gələcəyi memarlaşdırırıq. Biz sərhədləri aşmağa meylli yenilikçilər və mühəndislərdən ibarət kollektivik.",
+                about_p2: "Xüsusi həllər yaratmaq üçün vizyoner startaplar və qurulmuş müəssisələrlə tərəfdaşlıq edir, cəsur ideyalara və sürətli inkişafa inanırıq.",
+                stat1_label: "Təhvil Verilən Layihə",
+                stat2_label: "Çatılan Ölkə",
+                stat3_label: "Müştəri Məmnuniyyəti",
+                work_title: "Seçilmiş İşlər",
+                tag_web: "Veb Tətbiq",
+                tag_ai: "Süni İntellekt",
+                tag_ux: "UI/UX",
+                work_btn: "Layihəyə Bax",
+                contact_title: "Gəlin Birlikdə Yaradaq",
+                contact_desc: "Baxışınızı reallığa çevirməyə hazırsınız? 2026-cı il üçün yeni layihələr qəbul edirik. Bizimlə əlaqə saxlayın.",
+                footer_text: "&copy; 2026 AZ Media Tech. Bütün hüquqlar qorunur. Niyyətlə dizayn edilmişdir."
+            }
+        };
+
+        let currentLang = 'en';
+        const langToggleBtn = document.getElementById('lang-toggle');
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            langToggleBtn.innerText = lang === 'en' ? 'AZ' : 'EN';
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[lang][key]) {
+                    el.innerHTML = dict[lang][key];
+                }
+            });
+            // Re-trigger scroll animations recalculation if layout shifts
+            ScrollTrigger.refresh();
+        }
+
+        langToggleBtn.addEventListener('click', () => {
+            setLanguage(currentLang === 'en' ? 'az' : 'en');
+        });
+
+        // --- 2. Theme Toggle ---
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = themeToggle.querySelector('i');
+        const htmlDoc = document.documentElement;
+
+        themeToggle.addEventListener('click', () => {
+            if (htmlDoc.getAttribute('data-theme') === 'dark') {
+                htmlDoc.setAttribute('data-theme', 'light');
+                themeIcon.classList.remove('ph-sun');
+                themeIcon.classList.add('ph-moon');
+            } else {
+                htmlDoc.setAttribute('data-theme', 'dark');
+                themeIcon.classList.remove('ph-moon');
+                themeIcon.classList.add('ph-sun');
+            }
+        });
+
+        // --- 3. Navbar Scroll Behavior ---
+        let lastScrollY = window.scrollY;
+        const navbar = document.getElementById('navbar');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                if (window.scrollY > lastScrollY) {
+                    // Scroll down -> hide
+                    navbar.classList.add('nav-hidden');
+                } else {
+                    // Scroll up -> show
+                    navbar.classList.remove('nav-hidden');
+                }
+            }
+            lastScrollY = window.scrollY;
+        }, { passive: true });
+
+        // --- 4. Advanced GSAP Animations ---
+        gsap.registerPlugin(ScrollTrigger);
+
+        // A. Hero Load Animation
+        const heroTl = gsap.timeline();
+        heroTl.from(".gsap-hero-title", {
+            y: 100, opacity: 0, duration: 1.2, ease: "power4.out", delay: 0.2
+        })
+        .from(".gsap-hero-text", {
+            y: 30, opacity: 0, duration: 1, ease: "power3.out"
+        }, "-=0.8")
+        .from(".gsap-hero-btn", {
+            y: 20, opacity: 0, duration: 0.8, ease: "power3.out"
+        }, "-=0.6");
+
+        // B. Scroll Fade Ups (Batching for performance)
+        ScrollTrigger.batch(".gsap-fade-up", {
+            onEnter: batch => gsap.fromTo(batch, 
+                { opacity: 0, y: 50 }, 
+                { opacity: 1, y: 0, stagger: 0.15, duration: 1, ease: "power3.out", overwrite: true }
+            ),
+            start: "top 85%"
+        });
+
+        // C. Services Cards Stagger
+        gsap.from(".gsap-stagger-card", {
+            scrollTrigger: {
+                trigger: ".services-grid",
+                start: "top 80%"
+            },
+            y: 60,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.2,
+            ease: "back.out(1.2)"
+        });
+
+        // D. Image Parallax Effect
+        gsap.utils.toArray('.gsap-parallax').forEach(img => {
+            gsap.to(img, {
+                scrollTrigger: {
+                    trigger: img.parentElement,
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: true
+                },
+                y: -50,
+                ease: "none"
+            });
+        });
+
+        // E. Number Counters (GSAP Implementation)
+        const counters = document.querySelectorAll('.counter');
+        let animated = false;
+
+        ScrollTrigger.create({
+            trigger: "#stats-container",
+            start: "top 80%",
+            onEnter: () => {
+                if(!animated) {
+                    counters.forEach(counter => {
+                        const target = parseFloat(counter.getAttribute('data-target'));
+                        gsap.to(counter, {
+                            innerText: target,
+                            duration: 2,
+                            ease: "power2.out",
+                            snap: { innerText: 1 },
+                            onUpdate: function() {
+                                counter.innerHTML = Math.ceil(this.targets()[0].innerText);
+                            }
+                        });
+                    });
+                    animated = true;
+                }
+            }
+        });
+
+        // --- 5. Magnetic Button Effect (Desktop Only) ---
+        const magneticElements = document.querySelectorAll('.magnetic');
+        
+        // Only apply mousemove logic on non-touch devices
+        if(window.matchMedia("(pointer: fine)").matches) {
+            magneticElements.forEach(elem => {
+                elem.addEventListener('mousemove', (e) => {
+                    const rect = elem.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    
+                    gsap.to(elem, {
+                        x: x * 0.3,
+                        y: y * 0.3,
+                        duration: 0.4,
+                        ease: "power2.out"
+                    });
+                });
+                
+                elem.addEventListener('mouseleave', () => {
+                    gsap.to(elem, {
+                        x: 0,
+                        y: 0,
+                        duration: 0.7,
+                        ease: "elastic.out(1, 0.3)"
+                    });
+                });
+            });
+        }
+    </script>
+</body>
+</html>
